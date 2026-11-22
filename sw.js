@@ -1,6 +1,6 @@
 // Offline-Unterstützung: App-Dateien werden beim ersten Besuch gespeichert.
 // Bei einer neuen Version die Nummer erhöhen, damit Handys die neue Fassung laden.
-const VERSION = 'rba-v2';
+const VERSION = 'rba-v3';
 const APP = ['./', './index.html', './manifest.webmanifest',
   './icons/icon-192.png', './icons/icon-512.png', './icons/icon-maskable-512.png', './icons/apple-touch-icon.png', './icons/favicon-64.png'];
 
@@ -23,10 +23,15 @@ self.addEventListener('fetch', e => {
     return;
   }
   if (url.origin !== location.origin) return;
-  // App-Dateien: sofort aus dem Speicher, im Hintergrund aktualisieren
+  // Mit Internet immer die neueste Fassung laden, ohne Internet die gespeicherte
   e.respondWith(caches.open(VERSION).then(async c => {
-    const hit = await c.match(req, { ignoreSearch: true });
-    const net = fetch(req).then(res => { if (res.ok) c.put(req, res.clone()); return res; }).catch(() => null);
-    return hit || (await net) || (req.mode === 'navigate' ? c.match('./index.html') : Response.error());
+    try {
+      const res = await fetch(req, { cache: 'no-cache' });
+      if (res.ok) c.put(req, res.clone());
+      return res;
+    } catch (_) {
+      const hit = await c.match(req, { ignoreSearch: true });
+      return hit || (req.mode === 'navigate' ? c.match('./index.html') : Response.error());
+    }
   }));
 });
