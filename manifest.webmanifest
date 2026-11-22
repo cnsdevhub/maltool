@@ -1,7 +1,7 @@
 {
   "name": "Referenzbild-Analysator",
   "short_name": "Referenzbild",
-  "description": "Tonwerte, Farbflächen, Mutterfarben und Mischrezepte für die Ölmalerei – mit Titanweiß, Ultramarinblau, Burnt Umber, Pyrrolrot und Primärgelb.",
+  "description": "Tonwerte, Farbflächen und Mutterfarben für die Ölmalerei.",
   "lang": "de",
   "start_url": "./",
   "scope": "./",

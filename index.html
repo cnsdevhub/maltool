@@ -389,7 +389,7 @@ select{width:100%;appearance:none;-webkit-appearance:none;background-image:url("
       <div class="grab" aria-hidden="true"></div>
       <div class="peek" id="peek" role="button" tabindex="0" aria-label="Bedienung ausklappen">
         <span class="peek-sw"><i id="peekA"></i><i id="peekB"></i></span>
-        <span class="peek-txt"><b id="peekName">Tippe auf eine Stelle im Bild</b><small id="peekMeta">Für Tonwert und Mischrezept</small></span>
+        <span class="peek-txt"><b id="peekName">Tippe auf eine Stelle im Bild</b><small id="peekMeta">Für Tonwert und Temperatur</small></span>
         <svg class="i chev" viewBox="0 0 24 24"><path d="m6 15 6-6 6 6"/></svg>
       </div>
     </div>
@@ -402,9 +402,9 @@ select{width:100%;appearance:none;-webkit-appearance:none;background-image:url("
       <!-- MISCHEN -->
       <div class="pane" data-pane="mix" role="tabpanel">
         <section class="card" id="pickCard" aria-live="polite">
-          <div class="empty" id="pickEmpty"><span class="ring"></span><b>Tippe auf eine Stelle im Bild</b><p class="hint">Du bekommst ihren Tonwert und ein Mischrezept aus deinen fünf Farben.</p></div>
+          <div class="empty" id="pickEmpty"><span class="ring"></span><b>Tippe auf eine Stelle im Bild</b><p class="hint">Du bekommst ihren Tonwert, ihre Temperatur und siehst, aus welcher Mutterfarbe sie entsteht.</p></div>
           <div id="pickBody" hidden style="display:grid;gap:16px">
-            <div class="duo"><div id="swTarget"><span class="tag" id="lblA">Foto</span></div><div id="swMix"><span class="tag">Mischung</span></div></div>
+            <div class="duo" style="grid-template-columns:1fr"><div id="swTarget"><span class="tag" id="lblA">Foto</span></div></div>
             <div>
               <h2 class="pick-name" id="pickName"></h2>
               <p class="pick-meta" id="pickMeta"></p>
@@ -414,17 +414,7 @@ select{width:100%;appearance:none;-webkit-appearance:none;background-image:url("
               <div class="vscale-nums"><span>0</span><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span><span>9</span><span>10</span></div>
             </div>
             <div class="mod" id="modBlock" hidden></div>
-            <div style="display:grid;gap:10px">
-              <div class="recipe-title"><span class="lead" id="recipeLead">Mischrezept</span><span class="pill" id="quality"></span></div>
-              <div class="ratio" id="ratio" aria-hidden="true"></div>
-              <ul class="recipe" id="recipe"></ul>
-            </div>
-            <p class="tip" id="tip"></p>
-            <div id="variantsBlock" style="display:grid;gap:10px" hidden></div>
-            <div id="crossBlock" style="display:grid;gap:12px" hidden></div>
-            <button class="alt" id="altBtn" type="button" hidden></button>
             <button class="btn wide" id="saveBtn" type="button"><svg class="i" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Auf die Mischliste</button>
-            <p class="note">Volumenteile, geschätzt mit einem Farbmodell deiner Cobra-Farben. Nimm sie als Startpunkt und gleiche die Mischung am Foto ab.</p>
           </div>
         </section>
 
@@ -467,7 +457,7 @@ select{width:100%;appearance:none;-webkit-appearance:none;background-image:url("
         <section class="card">
           <h3>Deine Palette <span class="sub">Cobra</span></h3>
           <div class="chips" id="chips"></div>
-          <p class="hint">Oben links Purton, unten rechts mit Titanweiß aufgehellt.</p>
+          <p class="hint">Oben links Purton, unten rechts mit Titanweiß aufgehellt. Die Ansicht „Mischbar“ zeigt, was mit diesen fünf Farben erreichbar ist.</p>
         </section>
       </div>
 
@@ -519,7 +509,6 @@ select{width:100%;appearance:none;-webkit-appearance:none;background-image:url("
             </div>
             <div style="display:grid">
               <label class="check">Nur Neues hervorheben <input type="checkbox" id="layerNew" checked></label>
-              <label class="check">Als Mischfarben zeigen <input type="checkbox" class="showMix"></label>
               <label class="check">Umrisse zeigen <input type="checkbox" id="layerEdges" checked></label>
               <label class="check">Kürzel zeigen <input type="checkbox" id="layerCodes" checked></label>
             </div>
@@ -547,7 +536,6 @@ select{width:100%;appearance:none;-webkit-appearance:none;background-image:url("
             </div>
             <div style="display:grid">
               <label class="check">Umrisse zeigen <input type="checkbox" id="blobEdges" checked></label>
-              <label class="check">Als Mischfarben zeigen <input type="checkbox" class="showMix"></label>
               <label class="check">Kürzel zeigen <input type="checkbox" id="blobNums" checked></label>
             </div>
             <p class="hint" id="blobStat"></p>
@@ -711,7 +699,7 @@ const COS=Math.cos(55*Math.PI/180),SIN=Math.sin(55*Math.PI/180);
 const MODE_NAMES={original:'Original',gray:'Graustufen',values:'Tonwerte',temp:'Temperatur',gamut:'Mischbar',layers:'Schichten',blobs:'Farbflächen'};
 const MODE_HINTS={
   layers:'Plant dein Bild in drei Farbschichten: erst drei große Werte, dann wärmere, kühlere, hellere und dunklere Bereiche, zuletzt die Akzente. Jede Schicht mischst du aus der Farbe darunter.',
-  original:'Dein Foto, unverändert. Tippe auf eine Stelle, um ihre Farbe zu mischen.',
+  original:'Dein Foto, unverändert. Tippe auf eine Stelle, um Tonwert und Temperatur zu sehen.',
   gray:'Nur die Helligkeit, ohne Farbe. So prüfst du, ob die Tonwerte deines Bildes stimmen.',
   values:'Das Bild in wenige Helligkeitsstufen zerlegt, wie in einer Notan-Skizze. Verschiebe die Grenzen, bis die großen Formen klar werden.',
   temp:'Orange zeigt warme, Blau kühle Stellen. Die Helligkeit bleibt dabei erhalten.',
@@ -721,8 +709,8 @@ const MODE_HINTS={
 
 const state={mode:'original',levels:3,thr:[],blur:0,mirror:false,grid:false,gridDiag:false,gridCells:6,cellCm:5,
   format:'foto',fmtA:40,fmtB:50,orient:'quer',cropX:.5,cropY:.5,tempRel:true,tempGain:2.2,markOut:true,blobK:7,blobS:5,blobEdges:true,blobNums:true,blobTarget:'point',crossStep:1,motherMerge:10,showMix:false,blobShow:'groups',layer:1,layerS:5,layerNew:true,layerEdges:true,layerCodes:true,gridFit:null};
-try{const s=JSON.parse(localStorage.getItem('rba-settings')||'{}');for(const k of ['levels','gridCells','cellCm','format','fmtA','fmtB','tempRel','tempGain','markOut','gridDiag','blobK','blobS','blobEdges','blobNums','blobTarget','crossStep','motherMerge','layer','layerS','layerNew','layerEdges','layerCodes','showMix','blobShow'])if(k in s)state[k]=s[k];}catch(e){}
-function saveSettings(){try{const o={};for(const k of ['levels','gridCells','cellCm','format','fmtA','fmtB','tempRel','tempGain','markOut','gridDiag','blobK','blobS','blobEdges','blobNums','blobTarget','crossStep','motherMerge','layer','layerS','layerNew','layerEdges','layerCodes','showMix','blobShow'])o[k]=state[k];localStorage.setItem('rba-settings',JSON.stringify(o));}catch(e){}}
+state.showMix=false;try{const s=JSON.parse(localStorage.getItem('rba-settings')||'{}');for(const k of ['levels','gridCells','cellCm','format','fmtA','fmtB','tempRel','tempGain','markOut','gridDiag','blobK','blobS','blobEdges','blobNums','blobTarget','crossStep','motherMerge','layer','layerS','layerNew','layerEdges','layerCodes','blobShow'])if(k in s)state[k]=s[k];}catch(e){}
+function saveSettings(){try{const o={};for(const k of ['levels','gridCells','cellCm','format','fmtA','fmtB','tempRel','tempGain','markOut','gridDiag','blobK','blobS','blobEdges','blobNums','blobTarget','crossStep','motherMerge','layer','layerS','layerNew','layerEdges','layerCodes','blobShow'])o[k]=state[k];localStorage.setItem('rba-settings',JSON.stringify(o));}catch(e){}}
 
 let src=null,srcW=0,srcH=0,isDemo=true;
 let baseVer=0,W=0,H=0,rgba=null,LA=null,AA=null,BA=null,meanA=0,meanB=0,Lsorted=null;
@@ -1020,10 +1008,10 @@ function computeMothers(){
     if(!best)break;const merged={m:best.ms,w:cl[best.i].w+cl[best.j].w,lab:best.c,v:cl[best.i].v};cl=cl.filter((_,k)=>k!==best.i&&k!==best.j);cl.push(merged);}
   cl.sort((a,b)=>b.w-a.w);
   const motherOf=new Int32Array(G.length),gname=new Array(G.length);
-  const mothers=cl.map((c,mi)=>{const letter=String.fromCharCode(65+mi);const res=findRecipes(c.lab);const vec=vecFromRec(res.rec);
+  const mothers=cl.map((c,mi)=>{const letter=String.fromCharCode(65+mi);
     const members=c.m.slice().sort((a,b)=>G[b].share-G[a].share);
-    const variants=members.map((g,vi)=>{motherOf[g]=mi;gname[g]=members.length>1?letter+(vi+1):letter;return {g,name:gname[g],mod:members.length>1?modify(vec,G[g].lab):null};});
-    return {letter,lab:c.lab,rgb:labToRgb(...c.lab),share:c.w,res,vec,mix:res.rec.lab,members,variants,auto:autoName(c.lab),custom:null};});
+    const variants=members.map((g,vi)=>{motherOf[g]=mi;gname[g]=members.length>1?letter+(vi+1):letter;return {g,name:gname[g],mod:null};});
+    return {letter,lab:c.lab,rgb:labToRgb(...c.lab),share:c.w,mix:c.lab,members,variants,auto:autoName(c.lab),custom:null};});
   uniqueNames(mothers);carryNames(mothers);
   BLOB.mothers=mothers;BLOB.motherOf=motherOf;BLOB.gname=gname;BLOB.mkey=BLOB.key+'|'+T;BLOB.masks={};syncNameWarn();
 }
@@ -1058,7 +1046,7 @@ function renderMothers(){
   BLOB.mothers.forEach((M,mi)=>{const li=document.createElement('li');const on=isOpen(mi);li.dataset.mi=mi;if(on)li.className='open';
     const mem=M.members.length>1?`<span class="members">${M.variants.map(v=>`<span><i style="background:${css(BLOB.groups[v.g].rgb)}"></i>${v.name}</span>`).join('')}</span>`:'';
     const vis=!hiddenSet().has(mi);if(!vis)li.classList.add('hiddenM');
-    li.innerHTML=`<div class="mrow"><button type="button" class="eye" aria-pressed="${vis}" aria-label="Mutterfarbe ${M.letter} im Bild ${vis?'ausblenden':'einblenden'}" title="${vis?'Ausblenden':'Einblenden'}">${vis?'<svg class="i" viewBox="0 0 24 24"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>':'<svg class="i" viewBox="0 0 24 24"><path d="M3 3l18 18"/><path d="M10.6 5.1A10.8 10.8 0 0 1 12 5c6.4 0 10 7 10 7a17 17 0 0 1-3.2 4.1M6.6 6.6C3.8 8.4 2 12 2 12s3.6 7 10 7a10 10 0 0 0 5.4-1.6"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"/></svg>'}</button><button type="button" class="mother" aria-expanded="${on}"><span class="sw" style="background:${labCss(M.mix)}"></span><span><span class="num"><span class="letter">${M.letter}</span><span data-role="mname">${esc(mName(M))}</span></span><small>${recipeShort(M.res.rec)} · Tonwert ${fmtNum(M.lab[0]/10)}${M.members.length>1?` · ${M.members.length} Gruppen`:''}</small></span><span class="end"><span class="share">${fmtNum(M.share*100,0)} %</span><svg class="i chev" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></span>${mem}</button></div>`;
+    li.innerHTML=`<div class="mrow"><button type="button" class="eye" aria-pressed="${vis}" aria-label="Mutterfarbe ${M.letter} im Bild ${vis?'ausblenden':'einblenden'}" title="${vis?'Ausblenden':'Einblenden'}">${vis?'<svg class="i" viewBox="0 0 24 24"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>':'<svg class="i" viewBox="0 0 24 24"><path d="M3 3l18 18"/><path d="M10.6 5.1A10.8 10.8 0 0 1 12 5c6.4 0 10 7 10 7a17 17 0 0 1-3.2 4.1M6.6 6.6C3.8 8.4 2 12 2 12s3.6 7 10 7a10 10 0 0 0 5.4-1.6"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"/></svg>'}</button><button type="button" class="mother" aria-expanded="${on}"><span class="sw" style="background:${labCss(M.mix)}"></span><span><span class="num"><span class="letter">${M.letter}</span><span data-role="mname">${esc(mName(M))}</span></span><small>Tonwert ${fmtNum(M.lab[0]/10)}${M.members.length>1?` · ${M.members.length} Gruppen`:''}</small></span><span class="end"><span class="share">${fmtNum(M.share*100,0)} %</span><svg class="i chev" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></span>${mem}</button></div>`;
     li.querySelector('button.mother').addEventListener('click',()=>openMother(mi));
     li.querySelector('button.eye').addEventListener('click',()=>{const hs=hiddenSet();hs.has(mi)?hs.delete(mi):hs.add(mi);renderMothers();if(state.mode==='blobs')render();});
     ul.appendChild(li);
@@ -1076,47 +1064,34 @@ function openMother(mi,force){
   else if(y0!=null){const sc=document.querySelector('.panes');sc.scrollTop+=li.getBoundingClientRect().top-y0;}
 }
 function renderMotherDetail(M,box){
-  const r=M.res.rec,rp=recipeHTML(r),[cls,word]=quality(r.de);
-  if(!M.cross)M.cross={};if(!M.cross[state.crossStep])M.cross[state.crossStep]=crossFor(M.vec,r.lab,state.crossStep);
-  const cells=M.cross[state.crossStep],notes=crossNotes(cells,r.lab);
+  const [L,a,b]=M.lab,step=STEPS[state.crossStep],dv=step[0]*10,dt=step[1];
+  const cells=[];for(const vy of [1,0,-1])for(const tx of [-1,0,1])cells.push({vy,tx,lab:[Math.max(3,Math.min(97,L+vy*dv)),a+tx*dt*COS,b+tx*dt*SIN]});
   box.innerHTML=`
     <div class="name-edit"><svg class="i" viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg>
       <input type="text" maxlength="40" value="${esc(mName(M))}" aria-label="Name der Mutterfarbe ${M.letter}" placeholder="${esc(M.auto)}">
       <button type="button" class="btn ghost" data-role="autoname" ${M.custom?'':'hidden'}>Automatisch</button></div>
-    <div style="display:grid;gap:10px">
-      <div class="recipe-title"><span class="lead">Rezept</span><span class="pill ${cls}">${word} · ΔE ${fmtNum(r.de)}</span></div>
-      <div class="ratio" aria-hidden="true">${rp.ratio}</div>
-      <ul class="recipe">${rp.rows}</ul>
-      <p class="tip">${tipFor(r,M.lab)}</p>
-    </div>
+    <p class="tip">Tonwert ${fmtNum(L/10)} · ${fmtNum(M.share*100,0)} % des Bildes</p>
     ${M.variants.length>1?`<div style="display:grid;gap:10px">
-      <div class="recipe-title"><span class="lead">Varianten auf der Leinwand</span><span class="hint" style="font-size:12px">auf 10 Teile Mutterfarbe</span></div>
-      <div class="variants">${M.variants.map((v,i)=>{const G=BLOB.groups[v.g],q=v.mod&&v.mod.de>4.5;return `<button type="button" class="variant" data-i="${i}" aria-pressed="false"><span class="pair"><i style="background:${css(G.rgb)}" title="Im Bild"></i><i style="background:${labCss(v.mod?v.mod.lab:r.lab)}" title="Gemischt"></i></span>
-        <span><b>${shiftWords(r.lab,G.lab)}</b><small>${v.mod?addShort(v.mod):'direkt'}${q?' · nur annähernd':''}</small></span><span class="nm">${v.name}</span></button>`;}).join('')}</div>
-      <p class="cross-detail" data-role="vdetail">Tippe auf eine Variante für das genaue Rezept.</p></div>`:''}
+      <div class="recipe-title"><span class="lead">Varianten auf der Leinwand</span><span class="hint" style="font-size:12px">ausgehend von der Mutterfarbe</span></div>
+      <div class="variants">${M.variants.map(v=>{const G=BLOB.groups[v.g];return `<div class="variant" style="cursor:default"><span class="pair"><i style="background:${labCss(M.lab)}" title="Mutterfarbe"></i><i style="background:${css(G.rgb)}" title="${v.name}"></i></span>
+        <span><b>${shiftWords(M.lab,G.lab)}</b><small>Tonwert ${fmtNum(G.lab[0]/10)} · ${fmtNum(G.share*100,0)} % des Bildes</small></span><span class="nm">${v.name}</span></div>`;}).join('')}</div></div>`:''}
     <div style="display:grid;gap:12px">
       <div class="recipe-title"><span class="lead">Variationsfeld</span>
         <div class="seg small" role="group" aria-label="Schrittweite">${STEPS.map((st,i)=>`<button type="button" data-step="${i}" aria-pressed="${i===state.crossStep}">${st[2]}</button>`).join('')}</div></div>
-      <div class="cross">${cells.map((c,i)=>c.center?`<div class="cell center"><span class="sw" style="background:${labCss(c.lab)}"></span><b>Mutter</b><span>Ausgangston</span></div>`:
-        `<button type="button" class="cell" data-i="${i}" aria-pressed="false"><span class="sw" style="background:${labCss(c.m.lab)}">${c.m.de>4.5?'<i title="nur annähernd">≈</i>':''}</span><b>${cellName(c)}</b><span>${addShort(c.m)}</span></button>`).join('')}</div>
-      <p class="cross-detail" data-role="cdetail">Tippe auf ein Feld für das genaue Rezept. Schritt „${STEPS[state.crossStep][2]}“ heißt ${fmtNum(STEPS[state.crossStep][0])} Tonwerte heller oder dunkler.</p>
-      ${notes.length?`<ul class="cross-notes">${notes.map(t=>`<li>${t}</li>`).join('')}</ul>`:''}
+      <div class="cross">${cells.map(c=>{const nm=[c.vy>0?'heller':c.vy<0?'dunkler':'',c.tx>0?'wärmer':c.tx<0?'kühler':''].filter(Boolean).join(' · ');
+        return `<div class="cell${!c.vy&&!c.tx?' center':''}" style="cursor:default"><span class="sw" style="background:${labCss(c.lab)}"></span><b>${nm||'Mutter'}</b></div>`;}).join('')}</div>
+      <p class="hint" style="font-size:12.5px">So sieht die Mutterfarbe aus, wenn du sie ${fmtNum(step[0])} Tonwerte heller oder dunkler und wärmer oder kühler machst.</p>
     </div>
     <button class="btn wide" type="button" data-role="save"><svg class="i" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Auf die Mischliste</button>`;
-  box.querySelectorAll('.variant').forEach(b=>b.addEventListener('click',()=>{box.querySelectorAll('.variant').forEach(x=>x.setAttribute('aria-pressed','false'));b.setAttribute('aria-pressed','true');
-    const v=M.variants[+b.dataset.i];box.querySelector('[data-role=vdetail]').innerHTML=`<b>${v.name}:</b> ${v.mod?addText(v.mod):'Mutterfarbe direkt verwenden.'}`;}));
   box.querySelectorAll('[data-step]').forEach(b=>b.addEventListener('click',()=>{state.crossStep=+b.dataset.step;saveSettings();renderMotherDetail(M,box);}));
-  box.querySelectorAll('button.cell').forEach(b=>b.addEventListener('click',()=>{box.querySelectorAll('button.cell').forEach(x=>x.setAttribute('aria-pressed','false'));b.setAttribute('aria-pressed','true');
-    const c=cells[+b.dataset.i],[,w2]=quality(c.m.de);
-    box.querySelector('[data-role=cdetail]').innerHTML=`<b>${cap(cellName(c))}:</b> ${addText(c.m)} ${c.m.de>4.5?`<span class="warnline">Mit deiner Palette nur ${w2==='ungefähr'?'ungefähr':'annähernd'} erreichbar.</span>`:''}`;}));
   const inp=box.querySelector('.name-edit input'),autoBtn=box.querySelector('[data-role=autoname]');
   const applyName=v=>{v=(v||'').trim();M.custom=v&&v!==M.auto?v:null;inp.value=mName(M);autoBtn.hidden=!M.custom;
     customNames=BLOB.mothers.filter(x=>x.custom).map(x=>({lab:x.lab,name:x.custom}));syncNameWarn();
-    const row=box.parentElement.querySelector('[data-role=mname]');if(row)row.textContent=mName(M);if(pick&&pick.mod)renderMod();};
+    const row=box.parentElement.querySelector('[data-role=mname]');if(row)row.textContent=mName(M);if(pick&&pick.motherN)renderMod();};
   inp.addEventListener('change',()=>applyName(inp.value));
   inp.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();inp.blur();}else if(e.key==='Escape'){inp.value=mName(M);inp.blur();}});
   autoBtn.addEventListener('click',()=>applyName(''));
-  box.querySelector('[data-role=save]').addEventListener('click',()=>{saved.push({p:{x:null,y:null,rgb:M.rgb,lab:M.lab,res:M.res,which:'rec'},r,name:`${M.letter} · ${mName(M)}`,modText:null});renderSaved();toast(`${mName(M)} ist auf der Mischliste`);});
+  box.querySelector('[data-role=save]').addEventListener('click',()=>{saved.push({p:{x:null,y:null,rgb:M.rgb,lab:M.lab},name:`${M.letter} · ${mName(M)}`,modText:null});renderSaved();toast(`${mName(M)} ist auf der Mischliste`);});
 }
 function mergeWord(){const t=state.motherMerge;return t===0?'aus':t<=6?'wenig':t<=14?'mittel':'stark';}
 function setMother(mi){
@@ -1529,10 +1504,9 @@ function sampleRaw(nx,ny){
   const rgb=[l2u(r/c),l2u(g/c),l2u(b/c)];return {x:nx,y:ny,rgb,lab:rgbToLab(...rgb)};
 }
 function setPick(p){
-  p.res=findRecipes(p.lab);p.which='rec';
   if(state.mode==='layers'&&layersValid()&&p.x!=null){const cur=nodeAt(state.layer,p.x,p.y);p.gname=cur.code;p.curNode=cur.id;p.lkey=LAY.key;
     if(state.layer>1){const par=nodeAt(state.layer-1,p.x,p.y);p.mod=modify(par.vec,p.lab);p.motherLab=par.mixLab;p.motherN=par.code;p.motherName=nodeName(par);p.isLayer=true;}}
-  else if(p.group!=null&&mothersValid()&&BLOB.groups[p.group]){const mi=BLOB.motherOf[p.group],M=BLOB.mothers[mi];p.mod=modify(M.vec,p.lab);p.motherLab=M.mix;p.motherN=M.letter;p.motherName=mName(M);p.motherIdx=mi;p.gname=BLOB.gname[p.group];p.bkey=BLOB.key;p.mkey=BLOB.mkey;}
+  else if(p.group!=null&&mothersValid()&&BLOB.groups[p.group]){const mi=BLOB.motherOf[p.group],M=BLOB.mothers[mi];p.motherLab=M.lab;p.motherN=M.letter;p.motherName=mName(M);p.motherIdx=mi;p.gname=BLOB.gname[p.group];p.bkey=BLOB.key;p.mkey=BLOB.mkey;}
   const wasMother=pick&&pick.motherMode;pick=p;showPick();placeMarker();if(wasMother){renderMothers();if(state.mode==='blobs')render();}
 }
 function placeMarker(){if(!pick||pick.x==null){marker.style.display='none';return;}marker.style.display='block';marker.style.left=(pick.x*100)+'%';marker.style.top=(pick.y*100)+'%';}
@@ -1540,23 +1514,14 @@ function currentRecipe(){if(!pick)return null;return pick.which==='alt'&&pick.re
 function showPick(){
   if(!pick){$('#pickEmpty').hidden=false;$('#pickBody').hidden=true;updatePeek();return;}
   $('#pickEmpty').hidden=true;$('#pickBody').hidden=false;
-  const [L,a,b]=pick.lab,r=currentRecipe(),mm=!!pick.motherMode;
-  $('#swTarget').style.background=css(pick.rgb);$('#swMix').style.background=labCss(r.lab);
-  $('#lblA').textContent=mm?'Bild-Ø':'Foto';
-  $('#pickName').textContent=mm?`Mutterfarbe ${pick.letter}`:colorWords(L,a,b);
+  const [L,a,b]=pick.lab;
+  $('#swTarget').style.background=css(pick.rgb);$('#lblA').textContent=pick.area?'Fläche':'Foto';
+  $('#pickName').textContent=colorWords(L,a,b);
   const V=L/10;let temp='';
   if(rgba){const w=(a-meanA)*COS+(b-meanB)*SIN;temp=w>4?'wärmer als der Bilddurchschnitt':w<-4?'kühler als der Bilddurchschnitt':'im Bild etwa neutral';}
-  $('#pickMeta').textContent=mm?`${pick.variants.length>1?`Für ${pick.variants.length} Gruppen · `:''}${fmtNum(pick.share*100,0)} % des Bildes · Tonwert ${fmtNum(V)}`:`${pick.gname?`${pick.lkey?'Fläche':'Gruppe'} ${pick.gname} · `:''}${pick.area?'Ganze Farbfläche · ':''}Tonwert ${fmtNum(V)} von 10 · ${temp}`;
+  $('#pickMeta').textContent=`${pick.gname?`Gruppe ${pick.gname} · `:''}${pick.area?'Ganze Farbfläche · ':''}Tonwert ${fmtNum(V)} von 10 · ${temp}`;
   $('#vmark').style.left=Math.max(0,Math.min(100,(V+0.5)/11*100))+'%';
-  const [cls,word]=quality(r.de);const q=$('#quality');q.className='pill '+cls;q.textContent=`${word} · ΔE ${fmtNum(r.de)}`;
-  $('#recipeLead').textContent=pick.which==='alt'?(pick.res.alt.kind==='genauer'?'Genaueres Rezept':'Einfacheres Rezept'):mm?'Rezept der Mutterfarbe':pick.mod?'Oder direkt neu mischen':'Mischrezept';
-  renderMod();renderVariants();renderCross();updatePeek();
-  const rp=recipeHTML(r);$('#recipe').innerHTML=rp.rows;$('#ratio').innerHTML=rp.ratio;
-  $('#tip').textContent=tipFor(r,pick.lab);
-  const alt=$('#altBtn');const other=pick.which==='alt'?{kind:'empfohlen',r:pick.res.rec}:pick.res.alt;
-  if(other){alt.hidden=false;const lbl=other.kind==='genauer'?'Genauer':other.kind==='einfacher'?'Einfacher':'Zurück zur Empfehlung';
-    alt.innerHTML=`<span class="sw" style="background:${labCss(other.r.lab)}"></span><span><b>${lbl}:</b> ${recipeShort(other.r)} <span class="pct">· ΔE ${fmtNum(other.r.de)}</span></span>`;}
-  else alt.hidden=true;
+  renderMod();updatePeek();
 }
 function recipeHTML(r){
   const t=toParts(r),order=[...t.main,...t.trace.map(m=>({...m,trace:true}))];
@@ -1576,15 +1541,14 @@ function tipFor(r,lab){
     else tip='Mit deinen fünf Farben kommst du hier nur annähernd heran. '+tip;}
   return tip;
 }
+function motherNameOf(p){const live=BLOB&&BLOB.mkey===p.mkey&&BLOB.mothers[p.motherIdx];return live?mName(BLOB.mothers[p.motherIdx]):p.motherName;}
 function renderMod(){
-  const box=$('#modBlock');if(!pick||pick.motherMode||!pick.mod){box.hidden=true;return;}box.hidden=false;
-  const m=pick.mod,[cls,word]=quality(m.de);
-  const live=!pick.isLayer&&BLOB&&BLOB.mkey===pick.mkey&&BLOB.mothers[pick.motherIdx];const mn=live?mName(BLOB.mothers[pick.motherIdx]):pick.motherName;
-  box.innerHTML=`<div class="recipe-title"><span class="lead">Von <span class="letter">${pick.motherN}</span>${esc(mn)} aus</span><span class="pill ${cls}">${word} · ΔE ${fmtNum(m.de)}</span></div>
-    <div class="mod-row"><span class="sw" title="Mutterfarbe" style="background:${labCss(pick.motherLab)}"></span><span class="mod-arrow" aria-hidden="true">→</span><span class="sw" title="Abgewandelt" style="background:${labCss(m.lab)}"></span><span class="mod-dir">${shiftWords(pick.motherLab,pick.lab)}</span></div>
-    <p class="mod-add">${pick.isLayer?addText(m,`„${esc(mn)}“`):addText(m)}</p>${tooMuch(m)?'<p class="tip warnline">Das ist so viel Zugabe, dass du besser direkt neu mischst. Das Rezept dafür steht unten.</p>':''}
-    <div>${pick.isLayer?(layersValid()&&LAY.key===pick.lkey?`<button class="btn ghost" type="button" id="toMother">${pick.gname} im Schichtplan zeigen</button>`:''):(BLOB&&BLOB.mkey===pick.mkey?`<button class="btn ghost" type="button" id="toMother">${esc(mn)} öffnen</button>`:'')}</div>`;
-  const b=$('#toMother');if(b)b.addEventListener('click',()=>pick.isLayer?toggleNode(pick.curNode,true):openMother(pick.motherIdx,true));
+  const box=$('#modBlock');if(!pick||!pick.motherN){box.hidden=true;return;}box.hidden=false;
+  const mn=motherNameOf(pick);
+  box.innerHTML=`<div class="recipe-title"><span class="lead">Von <span class="letter">${pick.motherN}</span>${esc(mn)} aus</span></div>
+    <div class="mod-row"><span class="sw" title="Mutterfarbe" style="background:${labCss(pick.motherLab)}"></span><span class="mod-arrow" aria-hidden="true">→</span><span class="sw" title="Diese Stelle" style="background:${css(pick.rgb)}"></span><span class="mod-dir">${shiftWords(pick.motherLab,pick.lab)}</span></div>
+    <div>${BLOB&&BLOB.mkey===pick.mkey?`<button class="btn ghost" type="button" id="toMother">${esc(mn)} öffnen</button>`:''}</div>`;
+  const b=$('#toMother');if(b)b.addEventListener('click',()=>openMother(pick.motherIdx,true));
 }
 function renderVariants(){
   const box=$('#variantsBlock');if(!pick||!pick.motherMode||pick.variants.length<2){box.hidden=true;box.innerHTML='';return;}box.hidden=false;
@@ -1612,7 +1576,7 @@ function renderCross(){
     const c=cells[+b.dataset.i],[cls,word]=quality(c.m.de);
     $('#crossDetail').innerHTML=`<b>${cap(cellName(c))}:</b> ${addText(c.m)} ${c.m.de>4.5?`<span class="warnline">Mit deiner Palette nur ${word==='ungefähr'?'ungefähr':'annähernd'} erreichbar.</span>`:''}`;}));
 }
-$('#altBtn').addEventListener('click',()=>{if(!pick)return;pick.which=pick.which==='alt'?'rec':'alt';showPick();});
+
 
 function pointerToNorm(e){const r=frame.getBoundingClientRect();let x=(e.clientX-r.left)/r.width,y=(e.clientY-r.top)/r.height;if(state.mirror)x=1-x;return [Math.max(0,Math.min(1,x)),Math.max(0,Math.min(1,y))];}
 let dragging=false,pendingPick=null,pickRaf=0;
@@ -1625,14 +1589,14 @@ const endDrag=()=>{dragging=false;};frame.addEventListener('pointerup',endDrag);
 function renderSaved(){
   const ul=$('#saved');ul.innerHTML='';$('#savedEmpty').hidden=saved.length>0;$('#copyList').hidden=saved.length===0;
   saved.forEach((s,i)=>{const li=document.createElement('li');
-    li.innerHTML=`<span class="pair"><i style="background:${css(s.p.rgb)}"></i><i style="background:${labCss(s.r.lab)}"></i></span>
-      <button class="sel" type="button">${i+1}. ${recipeShort(s.r)}<small>${s.name} · Tonwert ${fmtNum(s.p.lab[0]/10)}${s.modText?` · oder ${s.modText}`:''}</small></button>
+    li.innerHTML=`<span class="pair"><i style="background:${css(s.p.rgb)};width:38px"></i></span>
+      <button class="sel" type="button">${i+1}. ${esc(s.name)}<small>Tonwert ${fmtNum(s.p.lab[0]/10)}${s.modText?` · ${esc(s.modText)}`:''}</small></button>
       <button class="btn ghost" type="button" aria-label="Von der Mischliste entfernen">×</button>`;
     li.querySelector('.sel').addEventListener('click',()=>{pick={...s.p};showPick();placeMarker();renderMothers();if(state.mode==='blobs')render();if(window.innerWidth<=820)$('#pickCard').scrollIntoView({behavior:'smooth',block:'start'});});
     li.querySelector('.btn').addEventListener('click',()=>{saved.splice(i,1);renderSaved();});ul.appendChild(li);});
 }
-$('#saveBtn').addEventListener('click',()=>{if(!pick)return;const r=currentRecipe();saved.push({p:{...pick,x:null,y:null},r,name:pick.motherMode?`Mutterfarbe ${pick.letter}`:colorWords(...pick.lab),modText:!pick.motherMode&&pick.mod?`${pick.motherN} · ${(!pick.isLayer&&BLOB&&BLOB.mkey===pick.mkey&&BLOB.mothers[pick.motherIdx])?mName(BLOB.mothers[pick.motherIdx]):pick.motherName} ${addShort(pick.mod)}`:null});renderSaved();toast('Auf der Mischliste');});
-$('#copyList').addEventListener('click',async()=>{const txt='Mischliste (Titanweiß, Ultramarinblau, Burnt Umber, Pyrrolrot, Primärgelb)\n'+saved.map((s,i)=>`${i+1}. ${s.name}, Tonwert ${fmtNum(s.p.lab[0]/10)}: ${recipeText(s.r)}${s.modText?` (oder ${s.modText})`:''}`).join('\n');
+$('#saveBtn').addEventListener('click',()=>{if(!pick)return;saved.push({p:{...pick,x:null,y:null},name:colorWords(...pick.lab),modText:pick.motherN?`aus ${pick.motherN} · ${motherNameOf(pick)}: ${shiftWords(pick.motherLab,pick.lab)}`:null});renderSaved();toast('Auf der Mischliste');});
+$('#copyList').addEventListener('click',async()=>{const txt='Mischliste\n'+saved.map((s,i)=>`${i+1}. ${s.name}, Tonwert ${fmtNum(s.p.lab[0]/10)}${s.modText?` (${s.modText})`:''}`).join('\n');
   try{await navigator.clipboard.writeText(txt);toast('Mischliste kopiert');}catch(e){toast('Kopieren ist hier nicht erlaubt');}});
 let toastT=0;function toast(t){const el=$('#toast');el.textContent=t;el.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>el.classList.remove('show'),1800);}
 
@@ -1744,13 +1708,10 @@ function setSheet(st){
 })();
 function updatePeek(){
   const a=$('#peekA'),b=$('#peekB');
-  if(!pick){a.style.background=b.style.background='';$('#peekName').textContent='Tippe auf eine Stelle im Bild';$('#peekMeta').textContent='Für Tonwert und Mischrezept';return;}
-  const r=currentRecipe();a.style.background=css(pick.rgb);b.style.background=labCss(pick.mod?pick.mod.lab:r.lab);
+  if(!pick){a.style.background=b.style.background='';$('#peekName').textContent='Tippe auf eine Stelle im Bild';$('#peekMeta').textContent='Für Tonwert und Temperatur';return;}
+  a.style.background=pick.motherN?labCss(pick.motherLab):css(pick.rgb);b.style.background=css(pick.rgb);
   $('#peekName').textContent=(pick.gname?pick.gname+' · ':'')+colorWords(...pick.lab);
-  let meta=`Tonwert ${fmtNum(pick.lab[0]/10)} · `;
-  if(pick.mod){const live=!pick.isLayer&&BLOB&&BLOB.mkey===pick.mkey&&BLOB.mothers[pick.motherIdx];meta+=tooMuch(pick.mod)?`neu mischen: ${recipeShort(r)}`:`${live?mName(BLOB.mothers[pick.motherIdx]):pick.motherName} ${addShort(pick.mod)}`;}
-  else meta+=recipeShort(r);
-  $('#peekMeta').textContent=meta;
+  $('#peekMeta').textContent=`Tonwert ${fmtNum(pick.lab[0]/10)}`+(pick.motherN?` · aus ${motherNameOf(pick)}: ${shiftWords(pick.motherLab,pick.lab)}`:'');
 }
 
 // ---------- Bild laden ----------

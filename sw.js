@@ -1,6 +1,6 @@
 // Offline-Unterstützung: App-Dateien werden beim ersten Besuch gespeichert.
 // Bei einer neuen Version die Nummer erhöhen, damit Handys die neue Fassung laden.
-const VERSION = 'rba-v1';
+const VERSION = 'rba-v2';
 const APP = ['./', './index.html', './manifest.webmanifest',
   './icons/icon-192.png', './icons/icon-512.png', './icons/icon-maskable-512.png', './icons/apple-touch-icon.png', './icons/favicon-64.png'];
 
